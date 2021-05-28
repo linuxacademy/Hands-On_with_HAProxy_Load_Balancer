@@ -1,11 +1,8 @@
 #!/bin/bash
 # haproxy_logging_environment_setup.sh
 # Script to create a backend container web farm for HAProxy lessons
-# Enabling DDoS Attack Protection Using HAProxy section
-# 5/27/2021 - Tom Dean
-
-# Set the prompt
-PS1="[\u@HAProxy \W]\$ " ; export PS1
+# Configuring HAProxy Logging lesson
+# 5/28/2021 - Tom Dean
 
 # Install Software
 # The first thing we need to do is install some software.
@@ -18,11 +15,14 @@ sudo yum -y module install container-tools
 sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 
 # Next, we're going to install HAProxy and a few odds and ends
-sudo yum -y install haproxy httpd-tools figlet wget
+sudo yum -y install haproxy rsyslog httpd-tools figlet wget
 
 # Download the HAProxy configuration file for the lesson and replace the stock configuration file
 sudo bash -c 'cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig'
-sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/haproxy-logging.cfg -o /etc/haproxy/haproxy.cfg
+sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/haproxy-monitoring.cfg -o /etc/haproxy/haproxy.cfg
+
+# Download the `99-haproxy.conf` file for `rsyslog` to `/etc/rsyslog.d`
+sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/99-haproxy.conf -o /etc/rsyslog.d/99-haproxy.conf
 
 # Create Some Test Files
 # We're going to need some test files for our web server containers. We're going to use 6 containers in 2 groups of 3. We'll use the `figlet` command to spice up our text files a bit!
@@ -66,22 +66,23 @@ sudo bash -c 'echo "127.0.0.1       ssh.site3.com" >> /etc/hosts'
 
 # Create a directory for our certificates
 sudo mkdir /etc/haproxy/certs
+sudo mkdir /etc/haproxy/ssl
 
 # Generate 2 private keys
-sudo openssl genrsa -out site1.key 2048
-sudo openssl genrsa -out site2.key 2048
+sudo openssl genrsa -out /etc/haproxy/ssl/site1.key 2048
+sudo openssl genrsa -out /etc/haproxy/ssl/site2.key 2048
 
 # Generate 2 Certificate Signing Requests
-sudo openssl req -new -key site1.key -out site1.csr -subj '/C=US/ST=Illinois/L=Chicago/O=ACG/CN=www.site1.com'
-sudo openssl req -new -key site2.key -out site2.csr -subj '/C=US/ST=Illinois/L=Chicago/O=ACG/CN=www.site1.com'
+sudo openssl req -new -key /etc/haproxy/ssl/site1.key -out /etc/haproxy/ssl/site1.csr -subj '/C=US/ST=Illinois/L=Chicago/O=ACG/CN=www.site1.com'
+sudo openssl req -new -key /etc/haproxy/ssl/site2.key -out /etc/haproxy/ssl/site2.csr -subj '/C=US/ST=Illinois/L=Chicago/O=ACG/CN=www.site1.com'
 
 # Create 2 Self-Signed Certificates
-sudo openssl x509 -req -days 365 -in site1.csr -signkey site1.key -out site1.crt
-sudo openssl x509 -req -days 365 -in site2.csr -signkey site2.key -out site2.crt
+sudo openssl x509 -req -days 365 -in /etc/haproxy/ssl/site1.csr -signkey /etc/haproxy/ssl/site1.key -out /etc/haproxy/ssl/site1.crt
+sudo openssl x509 -req -days 365 -in /etc/haproxy/ssl/site2.csr -signkey /etc/haproxy/ssl/site2.key -out /etc/haproxy/ssl/site2.crt
 
 # Append KEY and CRT to site1.pem and site2.pem
-sudo bash -c 'cat site1.key site1.crt >> /etc/haproxy/certs/site1.pem'
-sudo bash -c 'cat site2.key site2.crt >> /etc/haproxy/certs/site2.pem'
+sudo bash -c 'cat /etc/haproxy/ssl/site1.key /etc/haproxy/ssl/site1.crt >> /etc/haproxy/certs/site1.pem'
+sudo bash -c 'cat /etc/haproxy/ssl/site2.key /etc/haproxy/ssl/site2.crt >> /etc/haproxy/certs/site2.pem'
 
 # Fix the self-signed certificate file permissions
 sudo chmod 644 /etc/haproxy/ssl/*
