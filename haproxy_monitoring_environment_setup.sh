@@ -1,11 +1,8 @@
 #!/bin/bash
 # haproxy_monitoring_environment_setup.sh
 # Script to create a backend container web farm for HAProxy lessons
-# Enabling DDoS Attack Protection Using HAProxy section
+# Monitoring Your HAProxy Environment lesson
 # 5/28/2021 - Tom Dean
-
-# Set the prompt
-PS1="[\u@HAProxy \W]\$ " ; export PS1
 
 # Install Software
 # The first thing we need to do is install some software.
