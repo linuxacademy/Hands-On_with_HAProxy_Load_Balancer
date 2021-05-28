@@ -107,6 +107,10 @@ ls -al /etc/haproxy/certs/*
 # Test Our Web Servers
 port=1 ; for site in `seq 1 2`; do for server in `seq 1 3`; do curl -s http://127.0.0.1:808$port/test.txt ; port=$(($port + 1 )) ; done ; done | more
 
+# Restart `haproxy` and `rsyslog`
+sudo systemctl restart rsyslog
+sudo systemctl restart haproxy
+
 # Check our containers
 podman ps -a
 
