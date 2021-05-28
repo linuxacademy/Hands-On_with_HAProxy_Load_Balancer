@@ -21,8 +21,7 @@ sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.
 sudo yum -y install haproxy httpd-tools figlet wget
 
 # Download the HAProxy configuration file for the lesson and replace the stock configuration file
-sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig
-sudo cat /dev/null > /etc/haproxy/haproxy.cfg
+sudo bash -c 'cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig'
 sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/haproxy-logging.cfg -o /etc/haproxy/haproxy.cfg
 
 # Create Some Test Files
