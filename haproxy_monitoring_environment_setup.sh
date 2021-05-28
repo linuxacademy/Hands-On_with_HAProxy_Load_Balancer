@@ -69,22 +69,23 @@ sudo bash -c 'echo "127.0.0.1       ssh.site3.com" >> /etc/hosts'
 
 # Create a directory for our certificates
 sudo mkdir /etc/haproxy/certs
+sudo mkdir /etc/haproxy/ssl
 
 # Generate 2 private keys
-sudo openssl genrsa -out site1.key 2048
-sudo openssl genrsa -out site2.key 2048
+sudo openssl genrsa -out /etc/haproxy/ssl/site1.key 2048
+sudo openssl genrsa -out /etc/haproxy/ssl/site2.key 2048
 
 # Generate 2 Certificate Signing Requests
-sudo openssl req -new -key site1.key -out site1.csr -subj '/C=US/ST=Illinois/L=Chicago/O=ACG/CN=www.site1.com'
-sudo openssl req -new -key site2.key -out site2.csr -subj '/C=US/ST=Illinois/L=Chicago/O=ACG/CN=www.site1.com'
+sudo openssl req -new -key /etc/haproxy/ssl/site1.key -out /etc/haproxy/ssl/site1.csr -subj '/C=US/ST=Illinois/L=Chicago/O=ACG/CN=www.site1.com'
+sudo openssl req -new -key /etc/haproxy/ssl/site2.key -out /etc/haproxy/ssl/site2.csr -subj '/C=US/ST=Illinois/L=Chicago/O=ACG/CN=www.site1.com'
 
 # Create 2 Self-Signed Certificates
-sudo openssl x509 -req -days 365 -in site1.csr -signkey site1.key -out site1.crt
-sudo openssl x509 -req -days 365 -in site2.csr -signkey site2.key -out site2.crt
+sudo openssl x509 -req -days 365 -in /etc/haproxy/ssl/site1.csr -signkey /etc/haproxy/ssl/site1.key -out /etc/haproxy/ssl/site1.crt
+sudo openssl x509 -req -days 365 -in /etc/haproxy/ssl/site2.csr -signkey /etc/haproxy/ssl/site2.key -out /etc/haproxy/ssl/site2.crt
 
 # Append KEY and CRT to site1.pem and site2.pem
-sudo bash -c 'cat site1.key site1.crt >> /etc/haproxy/certs/site1.pem'
-sudo bash -c 'cat site2.key site2.crt >> /etc/haproxy/certs/site2.pem'
+sudo bash -c 'cat /etc/haproxy/ssl/site1.key /etc/haproxy/ssl/site1.crt >> /etc/haproxy/certs/site1.pem'
+sudo bash -c 'cat /etc/haproxy/ssl/site2.key /etc/haproxy/ssl/site2.crt >> /etc/haproxy/certs/site2.pem'
 
 # Fix the self-signed certificate file permissions
 sudo chmod 644 /etc/haproxy/ssl/*
