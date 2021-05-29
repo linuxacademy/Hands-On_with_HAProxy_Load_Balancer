@@ -19,7 +19,7 @@ sudo yum -y install haproxy rsyslog httpd-tools figlet wget
 
 # Download the HAProxy configuration file for the lesson and replace the stock configuration file
 sudo bash -c 'cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig'
-sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/haproxy-monitoring.cfg -o /etc/haproxy/haproxy.cfg
+sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/haproxy-logging.cfg -o /etc/haproxy/haproxy.cfg
 
 # Download the `99-haproxy.conf` file for `rsyslog` to `/etc/rsyslog.d`
 sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/99-haproxy.conf -o /etc/rsyslog.d/99-haproxy.conf
