@@ -92,6 +92,18 @@ sudo chmod 644 /etc/haproxy/certs/*
 sudo systemctl enable --now haproxy
 sudo systemctl enable --now rsyslog
 
+# Restart `haproxy` and `rsyslog`
+sudo systemctl restart rsyslog
+sudo systemctl restart haproxy
+
+# Shut down two web containers
+podman stop site1_server3
+podman stop site2_server2
+
+# Remove a test file from two servers
+podman exec site1_server2 rm /usr/share/nginx/html/test.txt
+podman exec site2_server3 rm /usr/share/nginx/html/test.txt
+
 # Generate some traffic for our HAProxy logs
 ab -n 100 -c 10 https://www.site1.com/ > ~/ab_site1.log > /dev/null 2>&1 &
 ab -n 100 -c 10 https://www.site2.com/ > ~/ab_site2.log > /dev/null 2>&1 &
@@ -106,10 +118,6 @@ ls -al /etc/haproxy/certs/*
 
 # Test Our Web Servers
 port=1 ; for site in `seq 1 2`; do for server in `seq 1 3`; do curl -s http://127.0.0.1:808$port/test.txt ; port=$(($port + 1 )) ; done ; done | more
-
-# Restart `haproxy` and `rsyslog`
-sudo systemctl restart rsyslog
-sudo systemctl restart haproxy
 
 # Check our containers
 podman ps -a
