@@ -21,9 +21,6 @@ sudo yum -y install haproxy rsyslog httpd-tools figlet wget
 sudo bash -c 'cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig'
 sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/haproxy-logging.cfg -o /etc/haproxy/haproxy.cfg
 
-# Download the `99-haproxy.conf` file for `rsyslog` to `/etc/rsyslog.d`
-sudo curl https://raw.githubusercontent.com/linuxacademy/Hands-On_with_HAProxy_Load_Balancer/main/99-haproxy.conf -o /etc/rsyslog.d/99-haproxy.conf
-
 # Create Some Test Files
 # We're going to need some test files for our web server containers. We're going to use 6 containers in 2 groups of 3. We'll use the `figlet` command to spice up our text files a bit!
 
