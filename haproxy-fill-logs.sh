@@ -1,0 +1,20 @@
+#!/bin/bash
+# haproxy-fill-logs.sh
+# Script to create a traffic to fill HAProxy logs with data
+# Troubleshooting HAProxy Issues lab
+# 6/24/2021 - Tom Dean
+
+# Run ApacheBench tests
+ab -n 1000 -c 10 https://www.site1.com/ > ~/ab_site1.log &
+ab -n 1000 -c 10 https://www.site2.com/ > ~/ab_site2.log &
+
+# Run curl tests
+for conn in `seq 1 1000` ; do curl -k https://www.site1.com/ ; done &
+for conn in `seq 1 1000` ; do curl -k https://www.site2.com/ ; done &
+
+# Run wget tests
+for conn in `seq 1 1000` ; do wget --no-check-certificate -O - https://www.site1.com/test.txt ; done &
+for conn in `seq 1 1000` ; do wget --no-check-certificate -O - https://www.site2.com/test.txt ; done &
+
+# Run SSH test
+for conn in `seq 1 100` ; do bash -c 'scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 2222 cloud_user@ssh.site3.com:/sshfiles/ssh-test.txt . &' ; done &
