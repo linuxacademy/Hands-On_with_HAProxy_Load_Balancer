@@ -2,7 +2,7 @@
 # haproxy-fill-logs.sh
 # Script to create a traffic to fill HAProxy logs with data
 # Troubleshooting HAProxy Issues lab
-# 6/24/2021 - Tom Dean
+# 6/30/2021 - Tom Dean
 
 # Run ApacheBench tests
 ab -n 1000 -c 10 https://www.site1.com/test.txt > ~/ab_site1.log > /dev/null 2>&1 &
